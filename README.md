@@ -1,77 +1,77 @@
-## Résumé
+# Orange County Lettings
 
-Site web d'Orange County Lettings
+Application web Django permettant de gérer des locations immobilières et des profils utilisateurs.
 
-## Développement local
+---
+
+## ⚙️ Installation
 
 ### Prérequis
+- Python 3.10 ou supérieur
+- Pipenv
 
-- Compte GitHub avec accès en lecture à ce repository
-- Git CLI
-- SQLite3 CLI
-- Interpréteur Python, version 3.6 ou supérieure
+### Mise en place
 
-Dans le reste de la documentation sur le développement local, il est supposé que la commande `python` de votre OS shell exécute l'interpréteur Python ci-dessus (à moins qu'un environnement virtuel ne soit activé).
+Cloner le dépôt puis installer les dépendances :
 
-### macOS / Linux
+```bash
+pipenv install
+pipenv shell
+```
 
-#### Cloner le repository
+Créer un fichier `.env` à la racine du projet :
 
-- `cd /path/to/put/project/in`
-- `git clone https://github.com/OpenClassrooms-Student-Center/Python-OC-Lettings-FR.git`
+```env
+DEBUG=False
+SECRET_KEY=votre-cle-secrete
+```
 
-#### Créer l'environnement virtuel
+Générer une clé secrète Django :
 
-- `cd /path/to/Python-OC-Lettings-FR`
-- `python -m venv venv`
-- `apt-get install python3-venv` (Si l'étape précédente comporte des erreurs avec un paquet non trouvé sur Ubuntu)
-- Activer l'environnement `source venv/bin/activate`
-- Confirmer que la commande `python` exécute l'interpréteur Python dans l'environnement virtuel
-`which python`
-- Confirmer que la version de l'interpréteur Python est la version 3.6 ou supérieure `python --version`
-- Confirmer que la commande `pip` exécute l'exécutable pip dans l'environnement virtuel, `which pip`
-- Pour désactiver l'environnement, `deactivate`
+```bash
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
 
-#### Exécuter le site
+---
 
-- `cd /path/to/Python-OC-Lettings-FR`
-- `source venv/bin/activate`
-- `pip install --requirement requirements.txt`
-- `python manage.py runserver`
-- Aller sur `http://localhost:8000` dans un navigateur.
-- Confirmer que le site fonctionne et qu'il est possible de naviguer (vous devriez voir plusieurs profils et locations).
+## ▶️ Utilisation
 
-#### Linting
+Appliquer les migrations de la base de données :
 
-- `cd /path/to/Python-OC-Lettings-FR`
-- `source venv/bin/activate`
-- `flake8`
+```bash
+python manage.py migrate
+```
 
-#### Tests unitaires
+Collecter les fichiers statiques :
 
-- `cd /path/to/Python-OC-Lettings-FR`
-- `source venv/bin/activate`
-- `pytest`
+```bash
+python manage.py collectstatic
+```
 
-#### Base de données
+Lancer le serveur de développement :
 
-- `cd /path/to/Python-OC-Lettings-FR`
-- Ouvrir une session shell `sqlite3`
-- Se connecter à la base de données `.open oc-lettings-site.sqlite3`
-- Afficher les tables dans la base de données `.tables`
-- Afficher les colonnes dans le tableau des profils, `pragma table_info(Python-OC-Lettings-FR_profile);`
-- Lancer une requête sur la table des profils, `select user_id, favorite_city from
-  Python-OC-Lettings-FR_profile where favorite_city like 'B%';`
-- `.quit` pour quitter
+```bash
+python manage.py runserver
+```
 
-#### Panel d'administration
+L’application sera accessible à l’adresse :
 
-- Aller sur `http://localhost:8000/admin`
-- Connectez-vous avec l'utilisateur `admin`, mot de passe `Abc1234!`
+```
+http://127.0.0.1:8000/
+```
 
-### Windows
+---
 
-Utilisation de PowerShell, comme ci-dessus sauf :
+## 🧪 Outils de développement
 
-- Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
-- Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+- Interface d’administration Django : `/admin`
+- Linting : `flake8`
+- Tests : `pytest`
+
+---
+
+## 📄 Notes
+
+- Les variables d’environnement sont gérées via un fichier `.env`
+- Les fichiers statiques sont servis avec WhiteNoise
+- Le dossier `staticfiles/` est généré automatiquement et ne doit pas être versionné
