@@ -5,11 +5,13 @@ name = "pypi"
 
 [packages]
 django = "*"
+python-dotenv = "*"
 
 [dev-packages]
 flake8 = "*"
 pytest = "*"
 pytest-django = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.13"
