@@ -2,4 +2,8 @@ from django.apps import AppConfig
 
 
 class ProfilesConfig(AppConfig):
-    name = 'profiles'
+    """
+    Application configuration for the profiles app.
+    """
+
+    name = "profiles"

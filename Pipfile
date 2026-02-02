@@ -12,6 +12,8 @@ flake8 = "*"
 pytest = "*"
 pytest-django = "*"
 django-extensions = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.13"
