@@ -18,7 +18,7 @@ INVALID_CASES = [
     ("country_iso_code", "US"),
 ]
 
-data_dict = {
+address_data_dict = {
     "number": 5000,
     "street": "rue des fleurs",
     "city": "Strasbourg",
@@ -30,7 +30,7 @@ data_dict = {
 
 @pytest.mark.parametrize("field,value", VALID_CASES)
 def test_validators_valid(field, value):
-    copy_data = data_dict.copy()
+    copy_data = address_data_dict.copy()
     copy_data[field] = value
     obj = Address(**copy_data)
     obj.full_clean()
@@ -38,7 +38,7 @@ def test_validators_valid(field, value):
 
 @pytest.mark.parametrize("field,value", INVALID_CASES)
 def test_validators_invalid(field, value):
-    copy_data = data_dict.copy()
+    copy_data = address_data_dict.copy()
     copy_data[field] = value
     obj = Address(**copy_data)
     with pytest.raises(ValidationError) as exc_info:
@@ -49,7 +49,7 @@ def test_validators_invalid(field, value):
 
 @pytest.mark.django_db
 def test_address_is_valid():
-    address_data = Address.objects.create(**data_dict)
+    address_data = Address.objects.create(**address_data_dict)
     assert 5000 == address_data.number
     assert "rue des fleurs" == address_data.street
     assert "Strasbourg" == address_data.city
@@ -60,7 +60,7 @@ def test_address_is_valid():
 
 @pytest.mark.django_db
 def test_address_create_fails_when_street_is_none():
-    copy_data = data_dict.copy()
+    copy_data = address_data_dict.copy()
     copy_data["street"] = None
     with pytest.raises(IntegrityError):
         Address.objects.create(**copy_data)
@@ -68,6 +68,6 @@ def test_address_create_fails_when_street_is_none():
 
 @pytest.mark.django_db
 def test_address_str():
-    address_data = Address.objects.create(**data_dict)
+    address_data = Address.objects.create(**address_data_dict)
     str_address_data = str(address_data)
     assert "5000 rue des fleurs" == str_address_data
