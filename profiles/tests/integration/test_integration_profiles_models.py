@@ -4,11 +4,6 @@ from django.core.exceptions import ValidationError
 from profiles.models import Profile
 
 
-def test_str_profiles(profile: Profile):
-    result = str(profile)
-    assert result == profile.user.username
-
-
 def test_favorite_city_accept_empty_string(user):
     favorite_city_obj = Profile.objects.create(user=user, favorite_city="")
     favorite_city_obj.full_clean()

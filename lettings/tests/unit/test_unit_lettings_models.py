@@ -1,7 +1,7 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from lettings.models import Address
+from lettings.models import Address, Letting
 
 VALID_CASES = [
     ("number", 9_999),
@@ -38,24 +38,19 @@ def test_validators_invalid(field, value, address_data_dict):
 
 
 def test_address_is_valid(address: Address):
-    assert 5000 == address.number
-    assert "rue des fleurs" == address.street
-    assert "Strasbourg" == address.city
-    assert "LA" == address.state
-    assert 75985 == address.zip_code
+    assert 7217 == address.number
+    assert "Military Street" == address.street
+    assert "Brunswick" == address.city
+    assert "GA" == address.state
+    assert 31525 == address.zip_code
     assert "USA" == address.country_iso_code
 
 
-def test_address_create_fails_when_street_is_none(db, address_data_dict):
-    copy_data = address_data_dict.copy()
-    copy_data["street"] = None
-    obj = Address(**copy_data)
-    with pytest.raises(ValidationError) as exc_info:
-        obj.full_clean()
-    errors = exc_info.value.message_dict
-    assert "street" in errors
-
-
-def test_address_str(address):
+def test_address_str(address: Address):
     str_address = str(address)
-    assert "5000 rue des fleurs" == str_address
+    assert "7217 Military Street" == str_address
+
+
+def test_str_letting(letting: Letting):
+    result = str(letting)
+    assert result == letting.title

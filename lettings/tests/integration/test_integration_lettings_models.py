@@ -1,8 +1,19 @@
 import pytest
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
 
 from lettings.models import Address, Letting
+
+
+def test_address_create_fails_when_street_is_none(db, address_data_dict):
+    copy_data = address_data_dict.copy()
+    copy_data["street"] = None
+    obj = Address(**copy_data)
+    with pytest.raises(ValidationError) as exc_info:
+        obj.full_clean()
+    errors = exc_info.value.message_dict
+    assert "street" in errors
 
 
 def test_letting_can_be_created(address: Address, letting: Letting):
@@ -10,17 +21,12 @@ def test_letting_can_be_created(address: Address, letting: Letting):
     assert letting.address == address
 
 
-def test_str_letting(letting: Letting):
-    result = str(letting)
-    assert result == letting.title
-
-
 def test_letting_cannot_share_same_address(letting: Letting):
     address = letting.address
     with pytest.raises(IntegrityError):
         with transaction.atomic():
             Letting.objects.create(
-                title="Test Titre",
+                title="Title Test",
                 address=address,
             )
 

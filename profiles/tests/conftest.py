@@ -12,5 +12,5 @@ def user(db):
 
 @pytest.fixture
 def profile(db, user):
-    profile_obj = Profile.objects.create(user=user)
+    profile_obj = Profile.objects.create(user=user, favorite_city="Berlin")
     return profile_obj

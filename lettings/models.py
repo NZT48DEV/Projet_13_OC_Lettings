@@ -16,6 +16,14 @@ class Address(models.Model):
         max_length=3, validators=[MinLengthValidator(3)]
     )
 
+    class Meta:
+        """
+        Customizes the display names of the Address model in the Django admin.
+        """
+
+        verbose_name = "Address"
+        verbose_name_plural = "Addresses"
+
     def __str__(self):
         """
         Returns a human-readable representation of the address.
