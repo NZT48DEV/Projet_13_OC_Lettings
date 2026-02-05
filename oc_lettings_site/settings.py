@@ -178,11 +178,9 @@ STATICFILES_DIRS = [
 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_FORMAT = (
-    (
-        "[%(asctime)s.%(msecs)03d]"
-        "%(log_color)s %(levelname)s %(reset)s "
-        "%(name)s %(message)s"
-    ),
+    "[%(asctime)s.%(msecs)03d]"
+    "%(log_color)s %(levelname)s %(reset)s "
+    "%(name)s %(message)s"
 )
 
 LOGGING = {
@@ -195,7 +193,7 @@ LOGGING = {
         },
         "colored": {
             "()": "colorlog.ColoredFormatter",
-            "format": LOG_FORMAT,
+            "fmt": LOG_FORMAT,
             "datefmt": "%d/%b/%Y %H:%M:%S",
             "log_colors": {
                 "DEBUG": "cyan",
