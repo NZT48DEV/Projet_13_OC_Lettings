@@ -6,12 +6,15 @@ name = "pypi"
 [packages]
 django = "*"
 python-dotenv = "*"
+whitenoise = "*"
 
 [dev-packages]
 flake8 = "*"
 pytest = "*"
 pytest-django = "*"
 django-extensions = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.13"

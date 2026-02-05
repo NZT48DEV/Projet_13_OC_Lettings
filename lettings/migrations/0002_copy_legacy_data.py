@@ -1,5 +1,6 @@
 from django.db import migrations
 
+
 def copy_legacy_lettings(apps, schema_editor):
     LegacyAddress = apps.get_model("oc_lettings_site", "Address")
     LegacyLetting = apps.get_model("oc_lettings_site", "Letting")
@@ -34,6 +35,7 @@ def copy_legacy_lettings(apps, schema_editor):
         for l in LegacyLetting.objects.all()
     ]
     Letting.objects.bulk_create(lettings)
+
 
 class Migration(migrations.Migration):
 

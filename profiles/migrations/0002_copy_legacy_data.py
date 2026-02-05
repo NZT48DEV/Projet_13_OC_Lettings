@@ -1,5 +1,6 @@
 from django.db import migrations
 
+
 def copy_legacy_profiles(apps, schema_editor):
     LegacyProfile = apps.get_model("oc_lettings_site", "Profile")
     Profile = apps.get_model("profiles", "Profile")
@@ -16,6 +17,7 @@ def copy_legacy_profiles(apps, schema_editor):
         for p in LegacyProfile.objects.all()
     ]
     Profile.objects.bulk_create(profiles)
+
 
 class Migration(migrations.Migration):
 
