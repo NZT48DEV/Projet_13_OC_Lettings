@@ -1,7 +1,11 @@
+import logging
 import os
 from pathlib import Path
 
+import sentry_sdk
 from dotenv import load_dotenv
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +28,52 @@ ALLOWED_HOSTS = [
     h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()
 ]
 
+
+def env_bool(name: str, default: bool = False) -> bool:
+    return os.getenv(name, str(default).strip().lower() in {"1", "true", "yes", "on"})
+
+
+def env_float(name: str, default: float = 0.0) -> float:
+    try:
+        return float(os.getenv(name, default))
+    except ValueError:
+        return default
+
+
+SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
+
+# Sentry logging level
+EVENT_LEVEL = os.getenv("EVENT_LEVEL", "WARNING").upper()
+
+LOG_LEVEL_MAP = {
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL,
+}
+
+sentry_logging = LoggingIntegration(
+    level=None,
+    event_level=LOG_LEVEL_MAP.get(EVENT_LEVEL, logging.WARNING),
+)
+
+# Sentry init
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+            sentry_logging,
+        ],
+        environment=os.getenv("SENTRY_ENVIRONMENT", "development"),
+        release=os.getenv("SENTRY_RELEASE"),
+        enable_logs=env_bool("SENTRY_ENABLE_LOGS", False),
+        attach_stacktrace=env_bool("ATTACH_STACKTRACE", False),
+        traces_sample_rate=env_bool("SENTRY_TRACES_SAMPLE_RATE", 0.0),
+        profile_session_sample_rate=env_bool("SENTRY_PROFILES_SAMPLE_RATE", 0.0),
+        send_default_pii=env_bool("SEND_DEFAULT_PII", False),
+    )
 
 # Application definition
 
@@ -125,3 +175,61 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = (
+    (
+        "[%(asctime)s.%(msecs)03d]"
+        "%(log_color)s %(levelname)s %(reset)s "
+        "%(name)s %(message)s"
+    ),
+)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "django_server": {
+            "format": "[%(asctime)s.%(msecs)03d] %(message)s",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "colored": {
+            "()": "colorlog.ColoredFormatter",
+            "format": LOG_FORMAT,
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+            "log_colors": {
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red",
+            },
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "colored",
+        },
+        "django_server": {
+            "class": "logging.StreamHandler",
+            "formatter": "django_server",
+        },
+    },
+    "loggers": {
+        "django.server": {
+            "handlers": ["django_server"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": LOG_LEVEL,
+    },
+}
