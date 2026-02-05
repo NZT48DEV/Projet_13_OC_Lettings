@@ -31,13 +31,60 @@ Elles sont regroupées dans un fichier `.env` à la racine du projet et **ne doi
 ```env
 DEBUG=False
 SECRET_KEY=votre-cle-secrete-django
+ALLOWED_HOSTS=localhost,127.0.0.1
+LOG_LEVEL=INFO
+EVENT_LEVEL=WARNING
 ```
 
-La clé secrète Django peut être générée avec la commande suivante :
+#### Détail des variables
+
+- **DEBUG**  
+  Active ou désactive le mode debug de Django.  
+  ⚠️ Doit impérativement être à `False` en production.
+
+- **SECRET_KEY**  
+  Clé secrète utilisée par Django pour la sécurité (sessions, tokens, hashage).  
+  Elle doit rester strictement confidentielle.
+
+- **ALLOWED_HOSTS**  
+  Liste des hôtes autorisés à accéder à l’application, séparés par des virgules.  
+  Exemple :
+  ```
+  localhost,127.0.0.1,mon-domaine.fr
+  ```
+  En production, ce champ doit contenir le nom de domaine public du site.
+
+- **LOG_LEVEL**  
+  Niveau minimum de logs affichés par l’application.  
+  Valeurs possibles :
+  - `DEBUG`
+  - `INFO`
+  - `WARNING`
+  - `ERROR`
+  - `CRITICAL`  
+
+  👉 `INFO` est un bon compromis entre visibilité et bruit.
+
+- **EVENT_LEVEL**  
+  Niveau minimum des événements envoyés à Sentry.  
+  Valeurs possibles :
+  - `WARNING`
+  - `ERROR`
+  - `CRITICAL`  
+
+  👉 Recommandé : `WARNING` ou `ERROR` afin d’éviter un volume excessif d’événements.
+
+---
+
+### Génération de la clé secrète Django
+
+La clé secrète peut être générée avec la commande suivante :
 
 ```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
+
+---
 
 ### Variables Sentry (optionnelles mais recommandées)
 
@@ -45,15 +92,17 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 SENTRY_DSN=your_sentry_dsn_here
 SENTRY_ENVIRONMENT=development
 SENTRY_RELEASE=oc-lettings-1.0.0
-EVENT_LEVEL=ERROR
-SEND_DEFAULT_PII=false
 SENTRY_TRACES_SAMPLE_RATE=0.0
 SENTRY_PROFILES_SAMPLE_RATE=0.0
+SEND_DEFAULT_PII=false
 ```
 
-- `SENTRY_DSN` : identifiant du projet Sentry.
-- `EVENT_LEVEL` : niveau minimum des logs envoyés à Sentry (`ERROR` recommandé).
-- Les autres variables permettent d’affiner le comportement de Sentry (environnement, performances, respect des données personnelles).
+- **SENTRY_DSN** : identifiant du projet Sentry.
+- **SENTRY_ENVIRONMENT** : environnement d’exécution (`development`, `staging`, `production`).
+- **SENTRY_RELEASE** : version applicative associée aux événements.
+- **SENTRY_TRACES_SAMPLE_RATE** : taux d’échantillonnage des performances (0.0 = désactivé).
+- **SENTRY_PROFILES_SAMPLE_RATE** : taux d’échantillonnage du profiling.
+- **SEND_DEFAULT_PII** : envoi ou non de données personnelles (recommandé : `false`).
 
 ---
 
@@ -113,11 +162,6 @@ Caractéristiques :
   - ERROR / CRITICAL : rouge
 - filtrage des logs Django trop verbeux (404, sessions).
 
-Les logs sont principalement placés dans :
-- les vues (accès, paramètres, décisions métier),
-- les blocs de gestion d’erreurs (`Http404`),
-- les points critiques de l’application.
-
 ---
 
 ## 🧪 Outils de développement
@@ -126,12 +170,10 @@ Les logs sont principalement placés dans :
 - Linting : `flake8`
 - Tests unitaires et d’intégration : `pytest`
 - Couverture de tests : `pytest-cov`
-- Hooks de pré-commit pour garantir la qualité du code :
-  - `isort` : tri automatique des imports
-  - `black` : formatage automatique du code
-  - `flake8` : analyse statique et respect des conventions PEP8
-
-Les hooks de pré-commit sont exécutés automatiquement avant chaque commit afin d’assurer un code propre, cohérent et conforme aux standards du projet.
+- Hooks de pré-commit :
+  - `isort`
+  - `black`
+  - `flake8`
 
 ---
 
@@ -141,6 +183,6 @@ Les hooks de pré-commit sont exécutés automatiquement avant chaque commit afi
 - Les variables d’environnement sont gérées via `.env`.
 - Les fichiers statiques sont servis avec WhiteNoise.
 - Le dossier `staticfiles/` est généré automatiquement et ne doit pas être versionné.
-- L’accès au projet Sentry est restreint aux utilisateurs autorisés via l’interface Sentry.
+- L’accès au projet Sentry est restreint aux utilisateurs autorisés.
 
 ---
