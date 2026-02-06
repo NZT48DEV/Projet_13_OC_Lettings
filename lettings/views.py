@@ -29,7 +29,6 @@ def letting(request, letting_id):
     logger.info(
         "Requesting letting detail (letting_id=%s)",
         letting_id,
-        extra={"letting_id": letting_id},
     )
 
     try:

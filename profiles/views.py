@@ -29,7 +29,6 @@ def profile(request, username):
     logger.info(
         "Requesting profile detail (username=%s)",
         username,
-        extra={"username": username},
     )
     try:
         profile_obj = get_object_or_404(Profile, user__username=username)

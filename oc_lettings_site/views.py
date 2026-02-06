@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 
@@ -35,4 +36,6 @@ def test_404(request):
 
 # View use only for testing sentry
 def sentry_debug(request):
+    if not settings.DEBUG:
+        raise Http404
     1 / 0
