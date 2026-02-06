@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 python-dotenv = "*"
 whitenoise = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -15,6 +16,7 @@ pytest-django = "*"
 django-extensions = "*"
 coverage = "*"
 pytest-cov = "*"
+colorlog = "*"
 
 [requires]
 python_version = "3.13"

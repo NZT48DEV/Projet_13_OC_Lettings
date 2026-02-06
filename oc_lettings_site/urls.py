@@ -10,6 +10,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("test-404/", views.test_404, name="test_404"),
     path("test-500/", views.test_500, name="test_500"),
+    path("sentry-debug/", views.sentry_debug),
 ]
 
 handler404 = "oc_lettings_site.views.custom_404"
