@@ -99,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "oc_lettings_site.middleware.request_logging.RequestLoggingMiddleware",
 ]
 
 ROOT_URLCONF = "oc_lettings_site.urls"
@@ -183,6 +184,9 @@ LOG_FORMAT = (
     "%(name)s %(message)s"
 )
 
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -203,6 +207,10 @@ LOGGING = {
                 "CRITICAL": "bold_red",
             },
         },
+        "file": {
+            "format": "[%(asctime)s] %(levelname)s %(name)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
     },
     "handlers": {
         "console": {
@@ -213,6 +221,31 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "django_server",
         },
+        "file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": str(LOG_DIR / "django.log"),
+            "when": "midnight",
+            "backupCount": 14,
+            "encoding": "utf-8",
+            "formatter": "file",
+        },
+        "errors_file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": str(LOG_DIR / "errors.log"),
+            "when": "midnight",
+            "backupCount": 30,
+            "encoding": "utf-8",
+            "formatter": "file",
+            "level": "WARNING",
+        },
+        "access_file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": str(LOG_DIR / "access.log"),
+            "when": "midnight",
+            "backupCount": 14,
+            "encoding": "utf-8",
+            "formatter": "file",
+        },
     },
     "loggers": {
         "django.server": {
@@ -221,13 +254,18 @@ LOGGING = {
             "propagate": False,
         },
         "django.request": {
-            "handlers": ["console"],
-            "level": "ERROR",
+            "handlers": ["console", "file", "errors_file"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "oc_lettings.access": {
+            "handlers": ["console", "access_file"],
+            "level": "INFO",
             "propagate": False,
         },
     },
     "root": {
-        "handlers": ["console"],
+        "handlers": ["console", "file"],
         "level": LOG_LEVEL,
     },
 }
