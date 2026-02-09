@@ -162,6 +162,43 @@ Caractéristiques :
   - ERROR / CRITICAL : rouge
 - filtrage des logs Django trop verbeux (404, sessions).
 
+### Logs persistants
+
+Les logs applicatifs sont sauvegardés sur disque dans le dossier :
+
+```
+logs/
+```
+
+### Fichiers générés
+
+- `django.log` : activité applicative générale (INFO+)
+- `errors.log` : erreurs et warnings (WARNING+)
+- `access.log` : journal des requêtes HTTP
+
+### Rotation et rétention
+
+Les logs sont rotés automatiquement **chaque jour à minuit** :
+
+- `django.log` : 14 jours
+- `access.log` : 14 jours
+- `errors.log` : 30 jours
+
+Les fichiers les plus anciens sont supprimés automatiquement afin d’éviter toute saturation du disque.
+
+### Access log
+
+Un middleware dédié journalise chaque requête HTTP :
+- méthode
+- URL
+- code de réponse
+- durée
+
+Certaines routes sont exclues :
+- `/static/`
+- `/media/`
+- `/favicon.ico`
+
 ---
 
 ## 🧪 Outils de développement
