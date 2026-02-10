@@ -8,6 +8,7 @@ django = "*"
 python-dotenv = "*"
 whitenoise = "*"
 sentry-sdk = "*"
+gunicorn = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -17,7 +18,7 @@ django-extensions = "*"
 coverage = "*"
 pytest-cov = "*"
 colorlog = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.13"
-python_full_version = "3.13.3"

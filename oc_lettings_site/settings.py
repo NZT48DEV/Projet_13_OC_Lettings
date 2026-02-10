@@ -10,6 +10,13 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+try:
+    import colorlog  # noqa: F401
+
+    HAS_COLORLOG = True
+except Exception:
+    HAS_COLORLOG = False
+
 load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
@@ -22,7 +29,7 @@ if not SECRET_KEY:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "False").lower() in ("1", "true", "yes", "on")
 
 ALLOWED_HOSTS = [
     h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()
@@ -40,8 +47,6 @@ def env_float(name: str, default: float = 0.0) -> float:
         return default
 
 
-SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
-
 # Sentry logging level
 EVENT_LEVEL = os.getenv("EVENT_LEVEL", "WARNING").upper()
 
@@ -57,6 +62,8 @@ sentry_logging = LoggingIntegration(
     level=None,
     event_level=LOG_LEVEL_MAP.get(EVENT_LEVEL, logging.WARNING),
 )
+
+SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
 
 # Sentry init
 if SENTRY_DSN:
@@ -85,10 +92,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_extensions",
     "lettings",
     "profiles",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["django_extensions"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -195,18 +204,25 @@ LOGGING = {
             "format": "[%(asctime)s.%(msecs)03d] %(message)s",
             "datefmt": "%d/%b/%Y %H:%M:%S",
         },
-        "colored": {
-            "()": "colorlog.ColoredFormatter",
-            "fmt": LOG_FORMAT,
-            "datefmt": "%d/%b/%Y %H:%M:%S",
-            "log_colors": {
-                "DEBUG": "cyan",
-                "INFO": "green",
-                "WARNING": "yellow",
-                "ERROR": "red",
-                "CRITICAL": "bold_red",
-            },
-        },
+        "console": (
+            {
+                "()": "colorlog.ColoredFormatter",
+                "fmt": LOG_FORMAT,
+                "datefmt": "%d/%b/%Y %H:%M:%S",
+                "log_colors": {
+                    "DEBUG": "cyan",
+                    "INFO": "green",
+                    "WARNING": "yellow",
+                    "ERROR": "red",
+                    "CRITICAL": "bold_red",
+                },
+            }
+            if HAS_COLORLOG
+            else {
+                "format": "[%(asctime)s] %(levelname)s %(name)s %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+            }
+        ),
         "file": {
             "format": "[%(asctime)s] %(levelname)s %(name)s %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
@@ -215,7 +231,7 @@ LOGGING = {
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "formatter": "colored",
+            "formatter": "console",
         },
         "django_server": {
             "class": "logging.StreamHandler",
