@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies (pipenv)
         run: |
-          pipenv install --dev --deploy
+            pipenv install --dev --deploy --python "$(which python)"
 
       - name: Lint (pre-commit)
         run: |
