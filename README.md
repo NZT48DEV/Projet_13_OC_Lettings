@@ -4,7 +4,7 @@ Application web Django permettant de gérer des locations immobilières et des p
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Installation (développement local)
 
 ### Prérequis
 - Python 3.10 ou supérieur
@@ -23,7 +23,7 @@ pipenv shell
 
 ## 🔐 Configuration des variables d’environnement
 
-Avant de lancer l’application, certaines variables d’environnement doivent être définies.
+Avant de lancer l’application, certaines variables d’environnement doivent être définies.  
 Elles sont regroupées dans un fichier `.env` à la racine du projet et **ne doivent jamais être versionnées**.
 
 ### Variables obligatoires
@@ -47,38 +47,17 @@ EVENT_LEVEL=WARNING
   Elle doit rester strictement confidentielle.
 
 - **ALLOWED_HOSTS**  
-  Liste des hôtes autorisés à accéder à l’application, séparés par des virgules.  
-  Exemple :
-  ```
-  localhost,127.0.0.1,mon-domaine.fr
-  ```
-  En production, ce champ doit contenir le nom de domaine public du site.
+  Liste des hôtes autorisés à accéder à l’application, séparés par des virgules.
 
 - **LOG_LEVEL**  
-  Niveau minimum de logs affichés par l’application.  
-  Valeurs possibles :
-  - `DEBUG`
-  - `INFO`
-  - `WARNING`
-  - `ERROR`
-  - `CRITICAL`  
-
-  👉 `INFO` est un bon compromis entre visibilité et bruit.
+  Niveau minimum de logs affichés par l’application.
 
 - **EVENT_LEVEL**  
-  Niveau minimum des événements envoyés à Sentry.  
-  Valeurs possibles :
-  - `WARNING`
-  - `ERROR`
-  - `CRITICAL`  
-
-  👉 Recommandé : `WARNING` ou `ERROR` afin d’éviter un volume excessif d’événements.
+  Niveau minimum des événements envoyés à Sentry.
 
 ---
 
 ### Génération de la clé secrète Django
-
-La clé secrète peut être générée avec la commande suivante :
 
 ```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
@@ -86,7 +65,7 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 
 ---
 
-### Variables Sentry (optionnelles mais recommandées)
+### Variables Sentry (optionnelles)
 
 ```env
 SENTRY_DSN=your_sentry_dsn_here
@@ -97,36 +76,17 @@ SENTRY_PROFILES_SAMPLE_RATE=0.0
 SEND_DEFAULT_PII=false
 ```
 
-- **SENTRY_DSN** : identifiant du projet Sentry.
-- **SENTRY_ENVIRONMENT** : environnement d’exécution (`development`, `staging`, `production`).
-- **SENTRY_RELEASE** : version applicative associée aux événements.
-- **SENTRY_TRACES_SAMPLE_RATE** : taux d’échantillonnage des performances (0.0 = désactivé).
-- **SENTRY_PROFILES_SAMPLE_RATE** : taux d’échantillonnage du profiling.
-- **SEND_DEFAULT_PII** : envoi ou non de données personnelles (recommandé : `false`).
-
 ---
 
-## ▶️ Utilisation
-
-Appliquer les migrations de la base de données :
+## ▶️ Utilisation (développement)
 
 ```bash
 python manage.py migrate
-```
-
-Collecter les fichiers statiques :
-
-```bash
 python manage.py collectstatic
-```
-
-Lancer le serveur de développement :
-
-```bash
 python manage.py runserver
 ```
 
-L’application sera accessible à l’adresse :
+Application accessible sur :
 
 ```
 http://127.0.0.1:8000/
@@ -134,92 +94,147 @@ http://127.0.0.1:8000/
 
 ---
 
-## 🛡️ Surveillance des erreurs et journalisation
+## 🐳 Exécution locale avec Docker (commande unique)
 
-### Surveillance des erreurs avec Sentry
+L’application peut être exécutée **uniquement avec Docker**, sans installer Python ou Pipenv localement.
 
-L’application intègre **Sentry** afin d’assurer la surveillance des erreurs et événements applicatifs.
+### Prérequis
+- Docker installé et fonctionnel
+- Un fichier `.env` configuré à la racine du projet
+- `make` disponible (Git Bash / WSL / Linux / macOS)
 
-Fonctionnalités principales :
-- capture automatique des exceptions non gérées (erreurs 500),
-- centralisation des erreurs dans l’interface Sentry,
-- enrichissement des événements avec des données contextuelles.
+### Commande unique
 
-Les exceptions non gérées sont automatiquement envoyées à Sentry.
-Les logs de niveau **ERROR** et **CRITICAL** sont également remontés via l’intégration avec le module `logging`.
+```bash
+make docker-run
+```
+
+Cette commande :
+1. télécharge l’image depuis Docker Hub,
+2. lance le conteneur,
+3. injecte les variables d’environnement depuis `.env`,
+4. expose l’application sur le port `8000`.
+
+Par défaut, l’image utilisée est :
+
+```
+nzt48dev/oc-lettings:latest
+```
+
+### Lancer une version précise (tag commit)
+
+```bash
+make docker-run TAG=<commit-sha>
+```
+
+### Variante debug (sans `--rm`)
+
+```bash
+make docker-run-debug
+```
 
 ---
 
-### Journalisation (Logging)
+## 🔁 Intégration Continue (CI)
 
-Un système de journalisation est mis en place à l’aide du module standard `logging`.
+Un pipeline CI/CD est mis en place via **GitHub Actions**.
 
-Caractéristiques :
-- un logger par module (`logging.getLogger(__name__)`),
-- logs horodatés et colorés en console selon le niveau :
-  - INFO : vert
-  - WARNING : jaune
-  - ERROR / CRITICAL : rouge
-- filtrage des logs Django trop verbeux (404, sessions).
+### Étapes exécutées automatiquement
 
-### Logs persistants
+À chaque **push** ou **pull request** :
+- installation de l’environnement via Pipenv,
+- linting (`pre-commit`),
+- exécution des tests unitaires et d’intégration,
+- vérification d’une couverture de tests ≥ **80 %**.
 
-Les logs applicatifs sont sauvegardés sur disque dans le dossier :
+Les secrets sensibles (`SECRET_KEY`, credentials Docker Hub) sont gérés via **GitHub Secrets**.
 
-```
-logs/
-```
+---
 
-### Fichiers générés
+## 📦 Conteneurisation et publication Docker
 
-- `django.log` : activité applicative générale (INFO+)
-- `errors.log` : erreurs et warnings (WARNING+)
-- `access.log` : journal des requêtes HTTP
+Lorsqu’un commit est poussé sur la branche `master` :
 
-### Rotation et rétention
+1. les tests doivent réussir,
+2. l’image Docker est construite,
+3. l’image est poussée sur Docker Hub avec deux tags :
+   - `latest`
+   - le hash du commit Git.
 
-Les logs sont rotés automatiquement **chaque jour à minuit** :
+Aucune conteneurisation ni publication n’est effectuée sur les autres branches.
 
-- `django.log` : 14 jours
-- `access.log` : 14 jours
-- `errors.log` : 30 jours
+---
 
-Les fichiers les plus anciens sont supprimés automatiquement afin d’éviter toute saturation du disque.
+## 🚀 Déploiement
 
-### Access log
+### Fonctionnement (vue d’ensemble)
 
-Un middleware dédié journalise chaque requête HTTP :
-- méthode
-- URL
-- code de réponse
-- durée
+Le déploiement s’appuie sur :
+- GitHub Actions pour l’automatisation,
+- Docker pour la portabilité de l’application,
+- Docker Hub comme registre d’images.
 
-Certaines routes sont exclues :
-- `/static/`
-- `/media/`
-- `/favicon.ico`
+Le déploiement en production repose **strictement** sur l’image Docker validée par la CI.
+
+---
+
+### Configuration requise
+
+Pour qu’un déploiement fonctionne correctement, il faut :
+- une image Docker disponible sur Docker Hub,
+- un fichier `.env` configuré avec les variables de production,
+- un environnement capable d’exécuter Docker (Render, VM, cloud provider).
+
+---
+
+### Étapes de déploiement
+
+1. Récupérer l’image Docker depuis le registre :
+   ```bash
+   docker pull nzt48dev/oc-lettings:latest
+   ```
+
+2. Lancer l’application :
+   ```bash
+   docker run -d      -p 8000:8000      --env-file .env      nzt48dev/oc-lettings:latest
+   ```
+
+3. Vérifier :
+   - accès au site public,
+   - chargement correct des fichiers statiques,
+   - interface `/admin` fonctionnelle
+
+---
+
+## 🛡️ Surveillance des erreurs et journalisation
+
+### Sentry
+- capture automatique des exceptions non gérées,
+- remontée des erreurs critiques,
+- environnement et version associés aux événements.
+
+### Logging
+- logs colorés en console (si disponible),
+- logs persistants dans `logs/`,
+- rotation quotidienne automatique :
+  - `django.log` : 14 jours
+  - `access.log` : 14 jours
+  - `errors.log` : 30 jours
 
 ---
 
 ## 🧪 Outils de développement
 
-- Interface d’administration Django : `/admin`
-- Linting : `flake8`
-- Tests unitaires et d’intégration : `pytest`
-- Couverture de tests : `pytest-cov`
-- Hooks de pré-commit :
-  - `isort`
-  - `black`
-  - `flake8`
+- Django Admin : `/admin`
+- Tests : `pytest`
+- Couverture : `pytest-cov`
+- Linting : `black`, `isort`, `flake8`, `pre-commit`
 
 ---
 
 ## 🔐 Sécurité et bonnes pratiques
 
-- Aucune donnée sensible n’est stockée dans le dépôt Git.
-- Les variables d’environnement sont gérées via `.env`.
-- Les fichiers statiques sont servis avec WhiteNoise.
-- Le dossier `staticfiles/` est généré automatiquement et ne doit pas être versionné.
-- L’accès au projet Sentry est restreint aux utilisateurs autorisés.
-
----
+- aucune donnée sensible versionnée,
+- secrets gérés via variables d’environnement,
+- fichiers statiques servis via WhiteNoise,
+- déploiement basé sur une image Docker validée par la CI.
