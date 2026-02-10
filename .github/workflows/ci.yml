@@ -7,6 +7,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: oc_lettings_site.settings
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
       - name: Checkout
@@ -31,9 +34,6 @@ jobs:
           pipenv run pre-commit run --all-files
 
       - name: Tests + coverage (>= 80%)
-        env:
-          DJANGO_SETTINGS_MODULE: oc_lettings_site.settings
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           pipenv run pytest --cov=. --cov-report=term-missing --cov-fail-under=80
 
