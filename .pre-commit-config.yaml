@@ -17,7 +17,7 @@ repos:
   - repo: local
     hooks:
       - id: pytest
-        name: pytest
-        entry: pipenv run pytest -q
+        name: pytest (skip in CI)
+        entry: bash -c 'if [ -z "$CI" ]; then pipenv run pytest -q; else echo "Skipping pytest (CI)"; fi'
         language: system
         pass_filenames: false
