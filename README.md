@@ -1,9 +1,8 @@
 # Orange County Lettings
 
-![CI](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml/badge.svg)
+![Django](https://img.shields.io/badge/Django-4.x-092E20)
 ![Docker Image](https://img.shields.io/badge/docker%20hub-nzt48dev%2Foc--lettings-blue)
 ![Render](https://img.shields.io/badge/deployed%20on-Render-46E3B7)
-![Django](https://img.shields.io/badge/Django-4.x-092E20)
 [![CI](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml/badge.svg)](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml)
 
 
