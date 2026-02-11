@@ -1,10 +1,15 @@
 import logging
+import os
 
-from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import Http404
 from django.shortcuts import render
 
 logger = logging.getLogger(__name__)
+
+
+def demo_routes_enabled() -> bool:
+    return os.getenv("ENABLE_DEMO_ROUTES", "false").lower() == "true"
 
 
 def index(request):
@@ -25,17 +30,23 @@ def custom_500(request):
     return render(request, "500.html", status=500)
 
 
-# Views used only for testing error handlers
+@staff_member_required
 def test_500(request):
+    if not demo_routes_enabled():
+        raise Http404()
     raise Exception("Test erreur 500 volontaire")
 
 
+@staff_member_required
 def test_404(request):
+    if not demo_routes_enabled():
+        raise Http404()
     raise Http404("Test erreur 404 volontaire")
 
 
 # View use only for testing sentry
+@staff_member_required
 def sentry_debug(request):
-    if not settings.DEBUG:
-        raise Http404
+    if not demo_routes_enabled():
+        raise Http404()
     1 / 0
