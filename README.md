@@ -103,6 +103,32 @@ http://127.0.0.1:8000/
 -   Make
 -   Fichier `.env` configuré
 
+### ⚠️ Utilisateurs Windows
+
+La commande `make` n'est pas installée par défaut sur Windows.
+
+Si vous utilisez Git Bash ou PowerShell, vous devez installer **GNU Make**.
+
+Méthode recommandée via Chocolatey :
+
+```bash
+choco install make
+```
+
+Redémarrer ensuite le terminal puis vérifier :
+
+```bash
+make --version
+```
+
+Alternative recommandée : utiliser **WSL (Windows Subsystem for Linux)** et installer make via :
+
+```bash
+sudo apt install make
+```
+
+------------------------------------------------------------------------
+
 ## Lancer l'application
 
 ``` bash
