@@ -67,12 +67,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/oc-lettings:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/oc-lettings:${{ github.sha }}
-            
-  deploy:
-    needs: docker
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Render deploy hook
-        run: |
-          curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
