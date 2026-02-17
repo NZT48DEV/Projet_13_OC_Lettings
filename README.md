@@ -4,6 +4,7 @@
 ![Docker Image](https://img.shields.io/badge/docker%20hub-nzt48dev%2Foc--lettings-blue)
 ![Render](https://img.shields.io/badge/deployed%20on-Render-46E3B7)
 [![CI](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml/badge.svg)](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot)](https://github.com/NZT48DEV/Projet_13_OC_Lettings/security/dependabot)
 
 
 Application web Django permettant de gérer des locations immobilières et
@@ -161,6 +162,15 @@ Sur **toutes les branches et Pull Requests** :
 -   Linting (`pre-commit`)
 -   Tests unitaires et d'intégration
 -   Couverture minimale ≥ 80 %
+
+
+------------------------------------------------------------------------
+
+# 🤖 Dependabot
+
+-   Ouvre automatiquement des Pull Requests de mise à jour pour **Python (Pipenv)**, **GitHub Actions** et **Docker** (planification hebdomadaire).
+-   Les PR doivent respecter la **protection de branche** et passer le check **CI / test** avant merge.
+-   Les **mises à jour de sécurité** (vulnérabilités) sont proposées dès détection par GitHub.
 
 ------------------------------------------------------------------------
 
