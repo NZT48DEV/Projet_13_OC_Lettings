@@ -4,12 +4,15 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
       DJANGO_SETTINGS_MODULE: oc_lettings_site.settings
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY || 'insecure-test-secret-key' }}
 
     steps:
       - name: Checkout
@@ -37,13 +40,26 @@ jobs:
         run: |
           pipenv run pytest --cov=. --cov-report=term-missing --cov-fail-under=80
 
-  docker:
-    # 1) Ne s'exécute que si "test" a réussi
+  automerge:
     needs: test
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
 
-    # 2) Ne s'exécute que sur la branche master (et uniquement sur push)
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Enable auto-merge for Dependabot PR
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          merge-method: squash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-
     runs-on: ubuntu-latest
 
     steps:
