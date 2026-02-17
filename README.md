@@ -1,92 +1,91 @@
-# Orange County Lettings
+# 🏡 Orange County Lettings
 
-![Django](https://img.shields.io/badge/Django-4.x-092E20)
-![Docker Image](https://img.shields.io/badge/docker%20hub-nzt48dev%2Foc--lettings-blue)
-![Render](https://img.shields.io/badge/deployed%20on-Render-46E3B7)
 [![CI](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml/badge.svg)](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml)
-[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot)](https://github.com/NZT48DEV/Projet_13_OC_Lettings/security/dependabot)
+[![Couverture](https://img.shields.io/badge/couverture-≥80%25-brightgreen)](#)
+[![Documentation](https://readthedocs.org/projects/projet-13-oc-lettings-nzt48dev/badge/?version=latest)](https://projet-13-oc-lettings-nzt48dev.readthedocs.io/en/latest/)
+[![Docker Image](https://img.shields.io/docker/v/nzt48dev/oc-lettings?sort=semver)](https://hub.docker.com/r/nzt48dev/oc-lettings)
+[![Docker Pulls](https://img.shields.io/docker/pulls/nzt48dev/oc-lettings)](https://hub.docker.com/r/nzt48dev/oc-lettings)
 
+---
 
-Application web Django permettant de gérer des locations immobilières et
-des profils utilisateurs.
+## 📌 Présentation
 
-------------------------------------------------------------------------
+Application web Django démontrant une architecture prête pour la production, incluant :
 
-# 🏗️ Architecture & Stack Technique
+- Architecture modulaire Django
+- Intégration Continue / Déploiement Continu (CI/CD)
+- Conteneurisation Docker
+- Déploiement automatisé
+- Gestion automatisée des dépendances
+- Journalisation avancée
+- Supervision via Sentry
+- Documentation technique versionnée (Sphinx + Read the Docs)
 
--   **Backend** : Django
--   **Base de données** : SQLite (développement)
--   **Serveur WSGI** : Gunicorn
--   **Fichiers statiques** : WhiteNoise
--   **Conteneurisation** : Docker
--   **CI/CD** : GitHub Actions
--   **Registry** : Docker Hub
--   **Production** : Render
--   **Monitoring** : Sentry
+Ce projet illustre un workflow d’ingénierie moderne orienté qualité, sécurité et maintenabilité.
 
-------------------------------------------------------------------------
+---
 
-# ⚙️ Installation (Développement Local)
+## 🏗️ Architecture & Stack Technique
 
-## Prérequis
+- **Langage** : Python 3.13
+- **Framework** : Django
+- **Base de données (dev)** : SQLite
+- **Serveur WSGI** : Gunicorn
+- **Fichiers statiques** : WhiteNoise
+- **Conteneurisation** : Docker
+- **CI/CD** : GitHub Actions
+- **Registry** : Docker Hub
+- **Déploiement** : Render
+- **Monitoring** : Sentry
+- **Documentation** : Sphinx + Read the Docs
 
--   Python 3.10+
--   Pipenv
+---
 
-## Installation
+## ⚙️ Installation (Développement local)
 
-``` bash
+### Prérequis
+
+- Python 3.13
+- Pipenv
+- Git
+
+### 1️⃣ Cloner le projet
+
+```bash
 git clone https://github.com/NZT48DEV/Projet_13_OC_Lettings
-pipenv install
+cd Projet_13_OC_Lettings
+```
+
+### 2️⃣ Installer les dépendances
+
+```bash
+pipenv install --dev
 pipenv shell
 ```
 
-------------------------------------------------------------------------
+### 3️⃣ Configurer les variables d’environnement
 
-# 🔐 Configuration des variables d'environnement
+```bash
+cp .env.example .env
+```
 
-Les variables doivent être définies dans un fichier `.env` à la racine
-du projet (non versionné).\
-Un fichier `.env.example` est fourni comme modèle de configuration.
+Modifier ensuite le fichier `.env`.
 
-## Variables obligatoires (développement)
+Exemple minimal :
 
-``` env
+```bash
 DEBUG=True
-SECRET_KEY=votre-cle-secrete-django
+SECRET_KEY=votre_cle_secrete
 ALLOWED_HOSTS=localhost,127.0.0.1
 LOG_LEVEL=INFO
 EVENT_LEVEL=WARNING
 ENABLE_DEMO_ROUTES=true
 ```
 
-### Génération d'une SECRET_KEY sécurisée
+### 4️⃣ Lancer l’application
 
-``` bash
-python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
-```
-
-------------------------------------------------------------------------
-
-## Variables Sentry (optionnelles en développement)
-
-``` env
-SENTRY_DSN=your_sentry_dsn_here
-SENTRY_ENVIRONMENT=development
-SENTRY_RELEASE=oc-lettings-dev
-ATTACH_STACKTRACE=true
-SENTRY_TRACES_SAMPLE_RATE=0.0
-SENTRY_PROFILES_SAMPLE_RATE=0.0
-SEND_DEFAULT_PII=false
-```
-
-------------------------------------------------------------------------
-
-# ▶️ Lancement en développement
-
-``` bash
+```bash
 python manage.py migrate
-python manage.py collectstatic
 python manage.py runserver
 ```
 
@@ -94,221 +93,129 @@ Application accessible sur :
 
 http://127.0.0.1:8000/
 
-------------------------------------------------------------------------
+---
 
-# 🐳 Exécution locale avec Docker (commande unique)
+## 🔐 Panel d’administration (Accès examinateur)
 
-## Prérequis
+Accéder à :
 
--   Docker
--   Make
--   Fichier `.env` configuré
+http://localhost:8000/admin
 
-### ⚠️ Utilisateurs Windows
+Identifiants :
 
-La commande `make` n'est pas installée par défaut sur Windows.
+- **Utilisateur** : `admin`
+- **Mot de passe** : `Abc1234!`
 
-Si vous utilisez Git Bash ou PowerShell, vous devez installer **GNU Make**.
+---
 
-Méthode recommandée via Chocolatey :
+## 🐳 Exécution via Docker
 
-```bash
-choco install make
-```
+### Prérequis
 
-Redémarrer ensuite le terminal puis vérifier :
+- Docker
+- Make
+- Fichier `.env` configuré
 
-```bash
-make --version
-```
-
-Alternative recommandée : utiliser **WSL (Windows Subsystem for Linux)** et installer make via :
+### Lancer l’application
 
 ```bash
-sudo apt install make
-```
-
-------------------------------------------------------------------------
-
-## Lancer l'application
-
-``` bash
 make docker-run
 ```
 
-Cette commande : 
-1. Télécharge l'image Docker depuis Docker Hub 
-2. Lance le conteneur 
-3. Injecte les variables d'environnement 
+Cette commande :
+
+1. Télécharge l’image Docker depuis Docker Hub
+2. Lance le conteneur
+3. Injecte les variables d’environnement
 4. Expose le port 8000
 
 Image utilisée :
 
-    nzt48dev/oc-lettings:latest
-
-Version spécifique :
-
-``` bash
-make docker-run TAG=<commit-sha>
+```
+nzt48dev/oc-lettings:latest
 ```
 
-------------------------------------------------------------------------
+---
 
-# 🔁 Intégration Continue (CI)
+## 🔄 CI/CD & Automatisation
 
-Sur **toutes les branches et Pull Requests** :
+Le pipeline GitHub Actions exécute automatiquement :
 
--   Installation de l'environnement
--   Linting (`pre-commit`)
--   Tests unitaires et d'intégration
--   Couverture minimale ≥ 80 %
+- Linting (`pre-commit`)
+- Tests unitaires et d’intégration
+- Couverture minimale ≥ 80 %
+- Auto-merge Dependabot (si tests OK)
+- Build et push Docker sur `master`
+- Déclenchement du déploiement Render
 
+La branche `master` est protégée : aucun merge sans validation du CI.
 
-------------------------------------------------------------------------
+---
 
-# 🤖 Dependabot
+## 📦 Gestion des dépendances
 
--   Ouvre automatiquement des Pull Requests de mise à jour pour **Python (Pipenv)**, **GitHub Actions** et **Docker** (planification hebdomadaire).
--   Les PR doivent respecter la **protection de branche** et passer le check **CI / test** avant merge.
--   Les **mises à jour de sécurité** (vulnérabilités) sont proposées dès détection par GitHub.
+- Pipenv pour la gestion des dépendances
+- Dependabot pour les mises à jour automatiques
+- Pull Requests automatiques pour correctifs de sécurité
 
-------------------------------------------------------------------------
+---
 
-# 📦 Conteneurisation
+## 🛡️ Journalisation & Monitoring
 
-Uniquement lors d'un **push sur la branche `master`** :
+### Logging
 
-1.  Les tests doivent réussir
-2.  L'image Docker est construite
-3.  L'image est poussée sur Docker Hub avec :
-    -   `latest`
-    -   `<commit-sha>`
+- Logs console colorés
+- Fichiers persistants :
+  - `django.log` (14 jours)
+  - `access.log` (14 jours)
+  - `errors.log` (30 jours)
+- Rotation automatique quotidienne
 
-Aucune conteneurisation n'est effectuée sur les autres branches.
+### Sentry
 
-------------------------------------------------------------------------
+- Capture des exceptions non gérées
+- Environnements différenciés (dev / production)
+- Paramétrage via variables d’environnement
 
-# 🚀 Déploiement en Production (Render)
+---
 
-## 🔄 Fonctionnement global
+## 🚀 Déploiement en production
 
-Branches ≠ master : → Tests uniquement
+Déclenché automatiquement lors d’un push sur `master` :
 
-Push sur master : → Tests\
-→ Build & Push Docker\
-→ Déploiement automatique via Render Deploy Hook
+1. Validation des tests
+2. Construction et push de l’image Docker
+3. Appel du Deploy Hook Render
+4. Mise à jour du service en production
 
-Chaque étape dépend strictement de la réussite de la précédente.
+---
 
-------------------------------------------------------------------------
+## 📚 Documentation technique
 
-## ⚙️ Configuration requise
+Documentation complète disponible en ligne :
 
-### 1️⃣ Secrets GitHub Actions
+👉 https://projet-13-oc-lettings-nzt48dev.readthedocs.io/
 
-Repository → Settings → Secrets and variables → Actions
+Elle inclut :
 
--   DOCKERHUB_USERNAME
--   DOCKERHUB_TOKEN
--   RENDER_DEPLOY_HOOK_URL
--   SECRET_KEY
+- Guide d’installation
+- Architecture détaillée
+- Description des modèles de données
+- Interfaces applicatives
+- Procédures de déploiement
+- Guide d’exploitation
 
-------------------------------------------------------------------------
+---
 
-### 2️⃣ Configuration Render
+## 🧪 Outils de développement
 
-Créer un Web Service basé sur une image Docker existante.
+- Tests : `pytest`
+- Couverture : `pytest-cov`
+- Linting : `black`, `isort`, `flake8`
+- Hooks Git : `pre-commit`
 
-Image :
+---
 
-    nzt48dev/oc-lettings:latest
+## 📄 Licence
 
-Port :
-
-    8000
-
-### Variables d'environnement (production)
-
-``` env
-SECRET_KEY=<clé secrète de production>
-DEBUG=False
-ALLOWED_HOSTS=<service>.onrender.com
-CSRF_TRUSTED_ORIGINS=https://<service>.onrender.com
-SENTRY_DSN=<dsn-production>
-SENTRY_ENVIRONMENT=production
-ENABLE_DEMO_ROUTES=false
-```
-
-------------------------------------------------------------------------
-
-## 🔁 Procédure complète de déploiement
-
-1.  Créer une Pull Request
-2.  Merger sur `master`
-3.  Le pipeline exécute automatiquement :
-    -   Tests
-    -   Build & push Docker
-    -   Déclenchement du Deploy Hook Render
-4.  Vérifier :
-    -   Page publique (CSS/images)
-    -   Interface `/admin`
-    -   Chargement correct des staticfiles
-    -   Monitoring Sentry actif
-
-------------------------------------------------------------------------
-
-# 🎭 Routes de démonstration (Soutenance)
-
-Certaines routes sont disponibles uniquement pour démonstration :
-
--   `/test-404`
--   `/test-500`
--   `/sentry-debug`
-
-Ces routes : 
-- Sont accessibles uniquement aux utilisateurs staff 
-- Sont activables via la variable `ENABLE_DEMO_ROUTES=true` 
-- Permettent de démontrer : 
-    - Les pages personnalisées 404 / 500 
-    - La remontée d'erreurs vers Sentry
-
-En production normale, `ENABLE_DEMO_ROUTES` doit être `false`.
-
-------------------------------------------------------------------------
-
-# 🛡️ Logs & Monitoring
-
-## Logging
-
--   Logs console colorés
--   Logs persistants dans `logs/`
--   Rotation automatique :
-    -   django.log → 14 jours
-    -   access.log → 14 jours
-    -   errors.log → 30 jours
-
-## Sentry
-
--   Capture automatique des exceptions non gérées
--   Association environnement + release
--   Monitoring actif en production
-
-------------------------------------------------------------------------
-
-# 🔐 Sécurité
-
--   Aucun secret versionné
--   `.env` non versionné
--   DEBUG=False en production
--   WhiteNoise pour servir les fichiers statiques
--   Déploiement basé uniquement sur image Docker validée par la CI
--   Routes de démonstration désactivables via variable d'environnement
-
-------------------------------------------------------------------------
-
-# 🧪 Outils
-
--   Django Admin : `/admin`
--   Tests : `pytest`
--   Couverture : `pytest-cov`
--   Linting : `black`, `isort`, `flake8`, `pre-commit`
+Projet réalisé dans le cadre d’un parcours OpenClassrooms.
