@@ -19,6 +19,9 @@ coverage = "*"
 pytest-cov = "*"
 colorlog = "*"
 pre-commit = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+myst-parser = "*"
 
 [requires]
 python_version = "3.13"
