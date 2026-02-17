@@ -1,15 +1,17 @@
 name: CI
 
 on:
-  push:
   pull_request:
+  push:
+    branches:
+      - master
 
 permissions:
   contents: read
 
 jobs:
   test:
-    name: CI / test
+    name: test
     runs-on: ubuntu-latest
     env:
       DJANGO_SETTINGS_MODULE: oc_lettings_site.settings
