@@ -49,10 +49,12 @@ jobs:
           pipenv run pytest --cov=. --cov-report=term-missing --cov-fail-under=80
 
   required_status:
-    name: report required check (CI / test)
+    name: publish required status (CI / test)
     needs: test
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      statuses: write
 
     steps:
       - name: Publish CI / test status
