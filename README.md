@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml/badge.svg)](https://github.com/NZT48DEV/Projet_13_OC_Lettings/actions/workflows/ci.yml)
 [![Couverture](https://img.shields.io/badge/couverture-≥80%25-brightgreen)](#)
-[![Documentation](https://readthedocs.org/projects/projet-13-oc-lettings-nzt48dev/badge/?version=latest)](https://projet-13-oc-lettings-nzt48dev.readthedocs.io/en/latest/)
+[![Documentation](https://readthedocs.org/projects/projet-13-oc-lettings-nzt48dev/badge/?version=latest)](https://projet-13-oc-lettings-nzt48dev.readthedocs.io/fr/latest/)
 [![Docker Image](https://img.shields.io/docker/v/nzt48dev/oc-lettings?sort=semver)](https://hub.docker.com/r/nzt48dev/oc-lettings)
 [![Docker Pulls](https://img.shields.io/docker/pulls/nzt48dev/oc-lettings)](https://hub.docker.com/r/nzt48dev/oc-lettings)
 
