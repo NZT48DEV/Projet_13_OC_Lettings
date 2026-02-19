@@ -1,4 +1,4 @@
-# ⚙️ Installation & Configuration
+# Installation & Configuration
 
 Cette section décrit l'installation complète du projet **OC Lettings**
 en environnement de développement local, ainsi que l'exécution via
