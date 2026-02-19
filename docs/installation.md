@@ -6,7 +6,7 @@ Docker.
 
 ------------------------------------------------------------------------
 
-# 1️⃣ Prérequis
+# Prérequis
 
 ## Environnement recommandé
 
@@ -26,7 +26,7 @@ pipenv --version
 
 ------------------------------------------------------------------------
 
-# 2️⃣ Installation en local (Pipenv)
+# Installation en local (Pipenv)
 
 ## Cloner le projet
 
@@ -48,7 +48,7 @@ Cela installe :
 
 ------------------------------------------------------------------------
 
-# 3️⃣ Configuration des variables d'environnement
+# Configuration des variables d'environnement
 
 Le projet fournit un fichier `.env.example` à copier en `.env`.
 
@@ -67,7 +67,7 @@ EVENT_LEVEL=WARNING
 ENABLE_DEMO_ROUTES=true
 ```
 
-### 🔐 Génération d'une SECRET_KEY sécurisée
+### Génération d'une SECRET_KEY sécurisée
 
 ``` bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
@@ -89,7 +89,7 @@ SEND_DEFAULT_PII=false
 
 ------------------------------------------------------------------------
 
-# 4️⃣ Lancement en développement
+# Lancement en développement
 
 ``` bash
 python manage.py migrate
@@ -103,7 +103,7 @@ http://127.0.0.1:8000/
 
 ------------------------------------------------------------------------
 
-# 5️⃣ Exécution locale avec Docker (commande unique)
+# Exécution locale avec Docker (commande unique)
 
 Le projet fournit un **Makefile** permettant d'exécuter l'application
 via Docker en une seule commande.
@@ -122,7 +122,7 @@ make docker-run
 
 ------------------------------------------------------------------------
 
-## ⚠️ Utilisateurs Windows
+## Utilisateurs Windows
 
 La commande `make` n'est pas installée par défaut.
 

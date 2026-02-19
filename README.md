@@ -23,6 +23,15 @@ production avec :
 
 ------------------------------------------------------------------------
 
+## 🌍 Application en production
+
+L'application est déployée et accessible en ligne :
+
+👉 https://oc-lettings-p2wk.onrender.com/
+
+
+------------------------------------------------------------------------
+
 ## 📚 Documentation complète
 
 La documentation détaillée (installation, architecture, déploiement,
