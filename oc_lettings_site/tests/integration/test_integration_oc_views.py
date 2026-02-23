@@ -35,7 +35,12 @@ def test_custom_500_page(client, monkeypatch, staff_user):
 
 def test_oc_lettings_site_index(client):
     response = client.get("/")
-    assert_custom_error_page(response, 200, "index.html", "Welcome to Holiday Homes")
+    assert_custom_error_page(
+        response,
+        200,
+        "index.html",
+        ["Welcome to Holiday Homes", "Welcome to OC Lettings"],
+    )
 
 
 def test_non_existing_url_returns_custom_404_page(client):
