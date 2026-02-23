@@ -9,4 +9,7 @@ def assert_custom_error_page(response, status_code, template_name, message):
     names = [t.name for t in response.templates]
     assert template_name in names
 
-    assert message in response.text
+    if isinstance(message, (list, tuple, set)):
+        assert any(msg in response.text for msg in message)
+    else:
+        assert message in response.text
