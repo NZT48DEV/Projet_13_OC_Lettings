@@ -1,28 +1,72 @@
-# Image publiée sur Docker Hub
-IMAGE = nzt48dev/oc-lettings
+# ============================================================
+# Configuration
+# ============================================================
 
-# Tag par défaut (latest)
+IMAGE = nzt48dev/oc-lettings
 TAG ?= latest
 
-# Port local:port container
 PORT ?= 8000
-
-# Fichier d'env utilisé pour injecter les variables Django
 ENV_FILE ?= .env
-
-# Nom du container (utile pour debug / logs)
 CONTAINER_NAME = oc-lettings
 
-.PHONY: docker-run docker-run-debug docker-pull docker-stop docker-logs
+# Mode disponible : default | logs
+# Usage :
+#   make docker-run-local
+#   make docker-run-local MODE=logs
+MODE ?= default
 
-# Commande unique demandée : pull + run (mode propre, container supprimé à l'arrêt)
+
+# ============================================================
+# Commande Gunicorn
+# ============================================================
+
+GUNICORN = gunicorn oc_lettings_site.wsgi:application \
+	--bind 0.0.0.0:8000 \
+	--worker-class gthread \
+	--workers 2 \
+	--threads 4 \
+	--timeout 120 \
+	--keep-alive 5
+
+GUNICORN_LOGS = $(GUNICORN) \
+	--access-logfile - \
+	--error-logfile -
+
+ifeq ($(MODE),logs)
+	RUN_CMD = $(GUNICORN_LOGS)
+else
+	RUN_CMD = $(GUNICORN)
+endif
+
+
+.PHONY: docker-build docker-run-local docker-run docker-run-debug docker-pull docker-stop docker-logs
+
+
+# ============================================================
+# Workflow local (Dockerfile courant)
+# ============================================================
+
+docker-build:
+	docker build -t oc-lettings-local .
+
+docker-run-local: docker-build
+	docker run --rm \
+		-p $(PORT):8000 \
+		--env-file $(ENV_FILE) \
+		oc-lettings-local \
+		$(RUN_CMD)
+
+
+# ============================================================
+# Workflow image Docker Hub
+# ============================================================
+
 docker-run: docker-pull
 	docker run --rm \
 		-p $(PORT):8000 \
 		--env-file $(ENV_FILE) \
 		$(IMAGE):$(TAG)
 
-# Mode debug : container nommé, persistant (logs, exec, stop possibles)
 docker-run-debug: docker-pull
 	docker run \
 		--name $(CONTAINER_NAME) \
@@ -30,14 +74,16 @@ docker-run-debug: docker-pull
 		--env-file $(ENV_FILE) \
 		$(IMAGE):$(TAG)
 
-# Récupère la dernière image depuis Docker Hub
+
+# ============================================================
+# Utilitaires
+# ============================================================
+
 docker-pull:
 	docker pull $(IMAGE):$(TAG)
 
-# Stop le container debug s'il tourne
 docker-stop:
 	docker stop $(CONTAINER_NAME) || true
 
-# Suivre les logs du container debug
 docker-logs:
 	docker logs -f $(CONTAINER_NAME)

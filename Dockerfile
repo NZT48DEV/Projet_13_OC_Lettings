@@ -27,4 +27,4 @@ RUN SECRET_KEY=dummy python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # 10) Démarrer le serveur WSGI
-CMD ["gunicorn", "oc_lettings_site.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "oc_lettings_site.wsgi:application", "--bind", "0.0.0.0:8000", "--worker-class", "gthread", "--workers", "2", "--threads", "4", "--timeout", "120", "--keep-alive", "5"]

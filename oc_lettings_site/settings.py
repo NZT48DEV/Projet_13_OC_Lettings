@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [
 
 
 def env_bool(name: str, default: bool = False) -> bool:
-    return os.getenv(name, str(default).strip().lower() in {"1", "true", "yes", "on"})
+    return os.getenv(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
 
 
 def env_float(name: str, default: float = 0.0) -> float:
@@ -77,8 +77,8 @@ if SENTRY_DSN:
         release=os.getenv("SENTRY_RELEASE"),
         enable_logs=env_bool("SENTRY_ENABLE_LOGS", False),
         attach_stacktrace=env_bool("ATTACH_STACKTRACE", False),
-        traces_sample_rate=env_bool("SENTRY_TRACES_SAMPLE_RATE", 0.0),
-        profile_session_sample_rate=env_bool("SENTRY_PROFILES_SAMPLE_RATE", 0.0),
+        traces_sample_rate=env_float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
+        profiles_sample_rate=env_float("SENTRY_PROFILES_SAMPLE_RATE", 0.0),
         send_default_pii=env_bool("SEND_DEFAULT_PII", False),
     )
 
