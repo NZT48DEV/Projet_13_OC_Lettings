@@ -1,9 +1,8 @@
 # 1) Base image (légère)
 FROM python:3.13-slim
 
-# 2) Injecte le SHA du commit (via la CI) pour l’exposer à Sentry
-ARG APP_RELEASE=unknown
-ENV SENTRY_RELEASE=$APP_RELEASE
+# 2) Injecte automatiquement le SHA du commit déployé par Render
+ENV SENTRY_RELEASE=${RENDER_GIT_COMMIT}
 
 # 3) Variables Python: pas de .pyc, logs immédiats
 ENV PYTHONDONTWRITEBYTECODE=1 \
