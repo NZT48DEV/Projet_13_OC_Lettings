@@ -45,7 +45,7 @@ jobs:
 
       - name: Tests + coverage (>= 80%)
         run: |
-          pipenv run pytest --cov=. --cov-report=term-missing --cov-fail-under=80
+          pipenv run pytest --cov-config=setup.cfg --cov-report=term-missing --cov-fail-under=80
 
   automerge:
     needs: test
