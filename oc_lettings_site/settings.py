@@ -74,7 +74,7 @@ if SENTRY_DSN:
             sentry_logging,
         ],
         environment=os.getenv("SENTRY_ENVIRONMENT", "development"),
-        release=os.getenv("SENTRY_RELEASE"),
+        release=os.getenv("SENTRY_RELEASE") or "unknown",
         enable_logs=env_bool("SENTRY_ENABLE_LOGS", False),
         attach_stacktrace=env_bool("ATTACH_STACKTRACE", False),
         traces_sample_rate=env_float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
