@@ -67,14 +67,17 @@ SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
 
 # Sentry init
 if SENTRY_DSN:
+    app_release = os.getenv("SENTRY_RELEASE", "oc-lettings@0.0.0").strip()
+
+    git_sha = (os.getenv("RENDER_GIT_COMMIT") or os.getenv("GIT_SHA") or "").strip()
+
+    release = f"{app_release}+{git_sha[:7]}" if git_sha else app_release
+
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        integrations=[
-            DjangoIntegration(),
-            sentry_logging,
-        ],
+        integrations=[DjangoIntegration(), sentry_logging],
         environment=os.getenv("SENTRY_ENVIRONMENT", "development"),
-        release=os.getenv("SENTRY_RELEASE") or "unknown",
+        release=release,
         enable_logs=env_bool("SENTRY_ENABLE_LOGS", False),
         attach_stacktrace=env_bool("ATTACH_STACKTRACE", False),
         traces_sample_rate=env_float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
