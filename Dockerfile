@@ -2,7 +2,8 @@
 FROM python:3.13-slim
 
 # 2) Injecte automatiquement le SHA du commit déployé par Render
-ENV SENTRY_RELEASE=${RENDER_GIT_COMMIT}
+ARG GIT_SHA=unknown
+ENV GIT_SHA=${GIT_SHA}
 
 # 3) Variables Python: pas de .pyc, logs immédiats
 ENV PYTHONDONTWRITEBYTECODE=1 \

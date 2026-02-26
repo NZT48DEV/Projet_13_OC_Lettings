@@ -39,6 +39,8 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            GIT_SHA=${{ github.event.workflow_run.head_sha }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/oc-lettings:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/oc-lettings:${{ github.event.workflow_run.head_sha }}
