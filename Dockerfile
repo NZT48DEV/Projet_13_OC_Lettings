@@ -1,7 +1,7 @@
 # 1) Base image (légère)
 FROM python:3.13-slim
 
-# 2) Injecte automatiquement le SHA du commit déployé par Render
+# 2) Injecte le SHA du commit via le build argument GitHub Actions
 ARG GIT_SHA=unknown
 ENV GIT_SHA=${GIT_SHA}
 
